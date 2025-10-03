@@ -30,7 +30,7 @@ primary_region = 'arn'
   path = "/health"
   protocol = "http"
   timeout = "2s"
-  tls_skip_verify = false`
+  tls_skip_verify = false
 
 [[vm]]
   memory = '1gb'
