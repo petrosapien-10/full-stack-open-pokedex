@@ -6,6 +6,9 @@
 app = 'full-stack-open-pokedex-hidden-dust-8085'
 primary_region = 'arn'
 
+[deploy]
+  strategy = "canary"
+
 [env]
   PORT = "3000"
 
@@ -19,6 +22,15 @@ primary_region = 'arn'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
+
+`[[http_service.http_checks]]
+  interval = "10s"
+  grace_period = "5s"
+  method = "GET"
+  path = "/health"
+  protocol = "http"
+  timeout = "2s"
+  tls_skip_verify = false`
 
 [[vm]]
   memory = '1gb'
