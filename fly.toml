@@ -7,13 +7,7 @@ app = 'full-stack-open-pokedx-hidden-dust-8085'
 primary_region = 'arn'
 
 [deploy]
-  strategy = "canary"oml app configuration file generated for full-stack-open-pokedex-hidden-dust-8085 on 2025-10-03T16:49:19+03:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'full-stack-open-pokedex-hidden-dust-8085'
-primary_region = 'arn'
+  strategy = "canary"
 
 [env]
   PORT = "3000"
