@@ -25,3 +25,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: E2E tests
         run: npm run test:e2e
+      - name: Deploy to Fly.io
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
