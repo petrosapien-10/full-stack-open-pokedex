@@ -56,6 +56,15 @@ jobs:
           title: Testing Discord webhook
           description: This should appear in Discord
 
+      - name: Alternative webhook test
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content":"Test message from GitHub Actions"}' \
+               "$DISCORD_WEBHOOK"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: Success notification
         uses: rjstone/discord-webhook-notify@v2
         if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
