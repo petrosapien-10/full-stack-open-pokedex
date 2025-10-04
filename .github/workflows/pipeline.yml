@@ -73,7 +73,7 @@ jobs:
           title: "New version of `Pokedex` is ready!"
           description: |
             Deployed on Fly.io succeed!
-          color: 0xff91a4
+          color: 0x00ff00
       - name: Notify Discord of build failure
         if: ${{ needs.simple_deployment_pipeline.result == 'failure' }}
         uses: sarisia/actions-status-discord@v1
