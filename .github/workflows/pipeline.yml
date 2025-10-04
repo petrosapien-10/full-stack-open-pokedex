@@ -63,15 +63,17 @@ jobs:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
     steps:
-      - uses: sarisia/actions-status-discord@v1
-      - name: Success Notify
-        uses: rjstone/discord-webhook-notify@v2
+      - name: Notify Discord of pipeline result
+        if: always()
+        uses: sarisia/actions-status-discord@v1
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: Petrosapien discord notification
-          avatarUrl: https://<some awesome domain/<some awesome>.png
-          text: |
-            test if this Discord action is working - petrosapien-10
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "New version of `software` is ready!"
+          description: |
+            Just a test after 
+          color: 0xff91a4
+
 
 
       
