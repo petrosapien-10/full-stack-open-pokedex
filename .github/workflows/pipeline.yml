@@ -43,7 +43,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: Test Bot
+          username: petrosapien-10 notification test
           severity: info
           title: Testing Discord webhook
           description: This should appear in Discord
