@@ -62,6 +62,7 @@ jobs:
   discord_notifications:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
+    if: always()
     steps:
       - name: Notify Discord of pipeline result
         if: ${{ needs.simple_deployment_pipeline.result == 'success'}}
