@@ -73,6 +73,58 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
+      # Testing rjstone/discord-webhook-notify@v2 action alongside curl
+      - name: Test notification (rjstone action)
+        if: ${{ github.event_name == 'push' }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: "Pokedex CI/CD Bot (Action)"
+          text: "🧪 **Testing rjstone/discord-webhook-notify action**"
+          severity: info
+          title: "Action Test"
+          description: "This notification is sent using the rjstone Discord action"
+          details: |
+            **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            **Actor:** ${{ github.actor }}
+          footer: "Sent via rjstone/discord-webhook-notify@v2"
+
+      - name: Success notification (rjstone action)
+        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: "Pokedex Deployment Bot (Action)"
+          text: "🚀 **Deployment Successful via Action!**"
+          severity: info
+          color: '#00ff00'
+          title: "New Version Deployed"
+          description: "A new version of Pokedex has been successfully deployed using the Discord action!"
+          details: |
+            **Deployed by:** ${{ github.actor }}
+            **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            **Method:** rjstone/discord-webhook-notify@v2
+          footer: "Deployment completed successfully via action"
+
+      - name: Failure notification (rjstone action)
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: "Pokedex Build Bot (Action)"
+          text: "❌ **Build Failed (Action Notification)!**"
+          severity: error
+          color: '#ff0000'
+          title: "Build Failure"
+          description: "The build process has failed and needs attention - sent via Discord action."
+          details: |
+            **Failed by:** ${{ github.actor }}
+            **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            **Branch:** ${{ github.ref_name }}
+            **Workflow:** ${{ github.workflow }}
+            **Method:** rjstone/discord-webhook-notify@v2
+          footer: "Build failed - please check the logs (via action)"
+
 
   tag_release:
     needs: [simple_deployment_pipeline]
