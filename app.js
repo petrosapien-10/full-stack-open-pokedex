@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3001
 
 app.use(express.static('dist'))
 app.get('/version', (req, res) => {
-  res.send('this version use curl v2') // change this string to ensure a new version deployed
+  res.send('test rjstone/discord-webhook-notify@v2') // change this string to ensure a new version deployed
 })
 
 app.get('/health', (req, res) => {

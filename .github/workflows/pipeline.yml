@@ -46,58 +46,6 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
-      - name: Test notification
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          curl -H "Content-Type: application/json" \
-               -d '{"content":"🧪 **Testing Discord webhook** - This should appear in Discord"}' \
-               "$DISCORD_WEBHOOK"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
-      - name: Success notification
-        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
-        run: |
-          curl -H "Content-Type: application/json" \
-               -d '{"content":"🚀 **A new version of Pokedex deployed** to https://pdx.fly.dev/ by ${{ github.actor }}"}' \
-               "$DISCORD_WEBHOOK"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
-      - name: Failure notification
-        if: ${{ failure() }}
-        run: |
-          curl -H "Content-Type: application/json" \
-               -d '{"content":"❌ **Build failed** - commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build :("}' \
-               "$DISCORD_WEBHOOK"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
-      # Testing alternative Discord action alongside curl
-      - name: Test notification (Ilshidur action)
-        if: ${{ github.event_name == 'push' }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: '🧪 **Testing Ilshidur/action-discord** - Alternative Discord action test by ${{ github.actor }}'
-
-      - name: Success notification (Ilshidur action)
-        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: '🚀 **Deployment Successful via Ilshidur Action!** A new version deployed to https://pdx.fly.dev/ by ${{ github.actor }} - commit: ${{ github.sha }}'
-
-      - name: Failure notification (Ilshidur action)
-        if: ${{ failure() }}
-        uses: Ilshidur/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: '❌ **Build Failed via Ilshidur Action!** Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build on branch ${{ github.ref_name }}'
-
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -110,3 +58,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+
+  discord_notifications:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: sarisia/actions-status-discord@v1
+      - name: Success Notify
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Petrosapien discord notification
+          avatarUrl: https://<some awesome domain/<some awesome>.png
+          text: |
+            test if this Discord action is working - petrosapien-10
+
+
+      
