@@ -38,14 +38,26 @@ jobs:
         if: ${{ github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-      - name: Debug webhook secret
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          echo "Webhook secret length: ${#DISCORD_WEBHOOK}"
-          echo "Webhook starts with: ${DISCORD_WEBHOOK:0:8}"
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
+      - name: The job has succeeded
+        if: ${{ success()}}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{job.status}}
+          title: "New version of `Pokedex` is ready!"
+          description: |
+            Deployed on Fly.io succeed!
+          color: 0x00ff00
+      - name: The job has failed
+        if: ${{failure()}}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{job.status}}
+          title: "Build failed!"
+          description: |
+            The deployment pipeline did not succeed.
+          color: 0xff0000
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -58,32 +70,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
-
-  discord_notifications:
-    needs: [simple_deployment_pipeline]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Notify Discord of deployment success
-        if: ${{ needs.simple_deployment_pipeline.result == 'success'}}
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{job.status}}
-          title: "New version of `Pokedex` is ready!"
-          description: |
-            Deployed on Fly.io succeed!
-          color: 0x00ff00
-      - name: Notify Discord of build failure
-        if: ${{ needs.simple_deployment_pipeline.result == 'failure' }}
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{job.status}}
-          title: "Build failed!"
-          description: |
-            The deployment pipeline did not succeed.
-          color: 0xff0000
 
 
 
