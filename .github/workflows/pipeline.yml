@@ -38,36 +38,49 @@ jobs:
         if: ${{ github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Debug webhook secret
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          echo "Webhook secret length: ${#DISCORD_WEBHOOK}"
+          echo "Webhook starts with: ${DISCORD_WEBHOOK:0:8}"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: Test notification
         uses: rjstone/discord-webhook-notify@v2
         if: ${{ github.event_name == 'push' }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: petrosapien-10 notification test
+          username: Test Bot
           severity: info
           title: Testing Discord webhook
           description: This should appear in Discord
 
-      # - name: Success notification
-      #   uses: rjstone/discord-webhook-notify@v2
-      #   if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
-      #   with:
-      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      #     username: Pokedex Deployment Bot
-      #     severity: info
-      #     color: '#00ff00'
-      #     title: A new version of Pokedex deployed
-      #     description: to https://pdx.fly.dev/ by ${{ github.actor }}
+      - name: Success notification
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Pokedex Deployment Bot
+          severity: info
+          color: '#00ff00'
+          title: A new version of Pokedex deployed
+          description: to https://pdx.fly.dev/ by ${{ github.actor }}
 
-      # - name: Failure notification
-      #   uses: rjstone/discord-webhook-notify@v2
-      #   if: ${{ failure() }}
-      #   with:
-      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      #     username: Pokedex Build Bot
-      #     severity: error
-      #     title: Build failed
-      #     description: commit ${{ github.sha }} by ${{ github.actor }} broke the build :(
+      - name: Failure notification
+        uses: rjstone/discord-webhook-notify@v2
+        if: ${{ failure() }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Pokedex Build Bot
+          severity: error
+          color: '#ff0000'
+          title: Build failed
+          description: commit ${{ github.sha }} by ${{ github.actor }} broke the build :(
+          details: |
+            **Repository:** ${{ github.repository }}
+            **Branch:** ${{ github.ref_name }}
+            **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
 
 
   tag_release:
