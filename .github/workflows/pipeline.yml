@@ -47,49 +47,31 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Test notification
-        uses: rjstone/discord-webhook-notify@v2
-        if: ${{ github.event_name == 'push' }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: Test Bot
-          severity: info
-          title: Testing Discord webhook
-          description: This should appear in Discord
-
-      - name: Alternative webhook test
         if: ${{ github.event_name == 'push' }}
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content":"Test message from GitHub Actions"}' \
+               -d '{"content":"🧪 **Testing Discord webhook** - This should appear in Discord"}' \
                "$DISCORD_WEBHOOK"
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Success notification
-        uses: rjstone/discord-webhook-notify@v2
         if: ${{ success() && github.event_name == 'push' && env.SKIP_DEPLOYMENT == 'false' }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: Pokedex Deployment Bot
-          severity: info
-          color: '#00ff00'
-          title: A new version of Pokedex deployed
-          description: to https://pdx.fly.dev/ by ${{ github.actor }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content":"🚀 **A new version of Pokedex deployed** to https://pdx.fly.dev/ by ${{ github.actor }}"}' \
+               "$DISCORD_WEBHOOK"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
       - name: Failure notification
-        uses: rjstone/discord-webhook-notify@v2
         if: ${{ failure() }}
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          username: Pokedex Build Bot
-          severity: error
-          color: '#ff0000'
-          title: Build failed
-          description: commit ${{ github.sha }} by ${{ github.actor }} broke the build :(
-          details: |
-            **Repository:** ${{ github.repository }}
-            **Branch:** ${{ github.ref_name }}
-            **Commit:** [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content":"❌ **Build failed** - commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build :("}' \
+               "$DISCORD_WEBHOOK"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
 
   tag_release:
