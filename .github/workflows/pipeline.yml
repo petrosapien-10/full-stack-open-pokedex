@@ -67,7 +67,6 @@ jobs:
             Deployed on Fly.io succeed!
           image: ${{ secrets.EMBED_IMAGE }}
           color: 0x00ff00
-
       - name: Notify Discord of pipeline failure
         if: ${{ needs.simple_deployment_pipeline.result == 'failure' }}
         uses: sarisia/actions-status-discord@v1
