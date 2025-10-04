@@ -65,6 +65,7 @@ jobs:
           title: "New version of `Pokedex` is ready!"
           description: |
             Deployed on Fly.io succeed!
+          image: ${{ secrets.EMBED_IMAGE }}
           color: 0x00ff00
 
       - name: Notify Discord of pipeline failure
@@ -76,5 +77,6 @@ jobs:
           title: "Build failed!"
           description: |
             The deployment pipeline did not succeed.
+          image: ${{ secrets.EMBED_IMAGE }}
           color: 0xff0000
       
