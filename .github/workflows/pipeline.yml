@@ -71,8 +71,18 @@ jobs:
           nodetail: true
           title: "New version of `software` is ready!"
           description: |
-            TEST: condition: needs.simple_deployment_pipeline.result == 'success' is working
+            Deployment succeeded!
           color: 0xff91a4
+      - name: Notify Discord of pipeline failure
+        if: ${{ needs.simple_deployment_pipeline.result == 'failure' }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "Deployment failed!"
+          description: |
+            The deployment pipeline did not succeed.
+          color: 0xff0000
 
 
 
