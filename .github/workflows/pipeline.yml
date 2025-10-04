@@ -52,7 +52,6 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: "Pokedex CI/CD Bot"
-          avatarUrl: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/pokemon/pokemon.png"
           text: "🧪 Testing Discord webhook integration"
           severity: info
           title: "Webhook Test"
@@ -64,7 +63,6 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: "Pokedex Deployment Bot"
-          avatarUrl: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/pokemon/pokemon.png"
           text: "🚀 **Deployment Successful!**"
           severity: info
           color: '#00ff00'
@@ -82,7 +80,6 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: "Pokedex Build Bot"
-          avatarUrl: "https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/pokemon/pokemon.png"
           text: "❌ **Build Failed!**"
           severity: error
           color: '#ff0000'
